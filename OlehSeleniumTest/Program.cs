@@ -53,6 +53,19 @@ public class Program
         // Need to be hided, because ads are displayed on the half of the screen!
         HideAds(driver);
         TakeScreenshot(driver, "step_5_row_verified");
+
+        // Edit the user's salary.
+        int newSalary = new Random().Next(50_000, 150_000);
+        user.Salary = newSalary.ToString();
+        ClickEditButton(driver, user.Email);
+        EditUserSalary(driver, newSalary);
+        CustomCommands.WaitForTableRowData(driver, user);
+        TakeScreenshot(driver, "step_6_updated_salary");
+
+        // Delete user
+        ClickDeleteButton(driver, user.Email);
+        CustomCommands.WaitForTableRowDeletion(driver, user.Email);
+        TakeScreenshot(driver, "step_7_delete_user");
     }
 
     private static void TakeScreenshot(IWebDriver driver, string stepName)
@@ -73,5 +86,57 @@ public class Program
             const elements = document.querySelectorAll('[id*=""google_ads""] , .ad, .ads, iframe, [style*=""z-index""]');
             elements.forEach(el => el.style.display = 'none');
         ");
+    }
+
+    private static void ClickEditButton(IWebDriver driver, string email)
+    {
+        var rows = driver.FindElements(By.CssSelector(".rt-tbody .rt-tr-group"));
+
+        foreach (var row in rows)
+        {
+            if (row.Text.Contains(email, StringComparison.OrdinalIgnoreCase))
+            {
+                var editButton = row.FindElement(By.CssSelector("span[title='Edit']"));
+                editButton.Click();
+
+                return;
+            }
+        }
+
+        throw new Exception("Edit button for user not found!");
+    }
+
+    private static void EditUserSalary(IWebDriver driver, int newSalary)
+    {
+        var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
+        wait.Until(d => d.FindElement(By.Id("salary")).Displayed);
+
+        var salaryInput = driver.FindElement(By.Id("salary"));
+        salaryInput.Clear();
+        salaryInput.SendKeys(newSalary.ToString());
+
+        driver.FindElement(By.Id("submit")).Click();
+    }
+
+    private static void ClickDeleteButton(IWebDriver driver, string email)
+    {
+        var rows = driver.FindElements(By.CssSelector(".rt-tbody .rt-tr-group"));
+
+        foreach (var row in rows)
+        {
+            if (row.Text.Contains(email, StringComparison.OrdinalIgnoreCase))
+            {
+                var rowText = row.Text;
+                Console.WriteLine($"User {rowText}");
+                Console.WriteLine("would be deleted!");
+
+                var deleteButton = row.FindElement(By.CssSelector("span[title='Delete']"));
+                deleteButton.Click();
+
+                return;
+            }
+        }
+
+        throw new Exception("Delete button for user not found!");
     }
 }

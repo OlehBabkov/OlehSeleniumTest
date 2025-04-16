@@ -42,10 +42,16 @@ namespace OlehSeleniumTest.Commands
         }
 
         public static void WaitForTableRowDeletion(
-            IWebDriver driver, string name, int timeoutInSeconds)
+            IWebDriver driver, string email, int timeoutInSeconds = 10)
         {
-            new WebDriverWait(driver, TimeSpan.FromSeconds(timeoutInSeconds))
-                .Until(d => d.FindElements(By.XPath($"//div[@class='rt-td' and text()='{name}']")).Count == 0);
+            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(timeoutInSeconds));
+
+            wait.Until(d =>
+            {
+                var rows = d.FindElements(By.CssSelector(".rt-tbody .rt-tr-group"));
+
+                return !rows.Any(row => row.Text.Contains(email, StringComparison.OrdinalIgnoreCase));
+            });
         }
     }
 }
