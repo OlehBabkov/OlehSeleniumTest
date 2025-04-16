@@ -1,13 +1,30 @@
+using Microsoft.Extensions.Options;
+using OlehSeleniumTest.Configuration;
 using OlehSeleniumTest.Models;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
-using System;
 
 namespace OlehSeleniumTest.Commands
 {
-    public static class CustomCommands
+    public class CustomCommands
     {
-        public static void WaitForTableRowData(
+        private readonly CustomSettings _customSettings;
+
+        public CustomCommands(IOptions<CustomSettings> options)
+        {
+            _customSettings = options.Value;
+        }
+
+        public void TakeScreenshot(IWebDriver driver, string stepName)
+        {
+            string screenshotsDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Screenshots");
+            Directory.CreateDirectory(screenshotsDir);
+
+            var screenshot = ((ITakesScreenshot)driver).GetScreenshot();
+            screenshot.SaveAsFile($"Screenshots/{stepName}.png");
+        }
+
+        public void WaitForTableRowData(
             IWebDriver driver, User expectedUser, int timeoutInSeconds = 5)
         {
             var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(timeoutInSeconds));
@@ -41,7 +58,7 @@ namespace OlehSeleniumTest.Commands
             });
         }
 
-        public static void WaitForTableRowDeletion(
+        public void WaitForTableRowDeletion(
             IWebDriver driver, string email, int timeoutInSeconds = 10)
         {
             var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(timeoutInSeconds));
