@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using OlehSeleniumTest.Commands;
 using OlehSeleniumTest.Models;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
@@ -15,8 +16,6 @@ public class Program
         // Start Chrome Browser.
         using var driver = new ChromeDriver(options);
         var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
-
-        
 
         // Navigate to the Web Tables page
         driver.Navigate().GoToUrl("https://demoqa.com/webtables");
@@ -48,6 +47,10 @@ public class Program
         // Submit
         driver.FindElement(By.Id("submit")).Click();
         TakeScreenshot(driver, "step_4_submit");
+
+        // Wait for the data in the table.
+        CustomCommands.WaitForTableRowData(driver, user, 10);
+        TakeScreenshot(driver, "step_5_row_verified");
     }
 
     private static void TakeScreenshot(IWebDriver driver, string stepName)
