@@ -50,6 +50,8 @@ public class Program
 
         // Wait for the data in the table.
         CustomCommands.WaitForTableRowData(driver, user, 10);
+        // Need to be hided, because ads are displayed on the half of the screen!
+        HideAds(driver);
         TakeScreenshot(driver, "step_5_row_verified");
     }
 
@@ -60,5 +62,16 @@ public class Program
 
         var screenshot = ((ITakesScreenshot)driver).GetScreenshot();
         screenshot.SaveAsFile($"Screenshots/{stepName}.png");
+    }
+
+    private static void HideAds(IWebDriver driver)
+    {
+        IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+
+        // Hide all ads!
+        js.ExecuteScript(@"
+            const elements = document.querySelectorAll('[id*=""google_ads""] , .ad, .ads, iframe, [style*=""z-index""]');
+            elements.forEach(el => el.style.display = 'none');
+        ");
     }
 }
