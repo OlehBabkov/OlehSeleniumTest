@@ -1,0 +1,34 @@
+# Build and publish folders
+bin/
+obj/
+out/
+
+# Rider / VS Code / VS files
+.idea/
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Logs
+*.log
+
+# Screenshots folder (optional — or keep it if you want to track screenshots in Git)
+# Screenshots/
+
+# Mac OS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Dotnet environment
+*.dbmdl
+*.pdb
+
+# User secrets
+secrets.json
+
+# VS Test Results
+TestResults/
