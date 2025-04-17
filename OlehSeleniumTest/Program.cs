@@ -1,89 +1,52 @@
 ﻿using System.Text.Json;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using OlehSeleniumTest.Commands;
-using OlehSeleniumTest.Configuration;
-using OlehSeleniumTest.Models;
-using OlehSeleniumTest.Services;
+using OlehSeleniumTest.Infrastructure;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
 
 public class Program
 {
     static async Task Main(string[] args)
     {
-        var host = Host.CreateDefaultBuilder()
-            .ConfigureAppConfiguration((context, config) =>
-            {
-                config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-            })
-            .ConfigureServices((context, services) =>
-            {
-                services.Configure<CustomSettings>(context.Configuration.GetSection("CustomSettings"));
-
-                services.AddSingleton<CustomCommands>();
-                services.AddSingleton<JsCommands>();
-                services.AddSingleton<TableActions>();
-                services.AddSingleton<BrowserService>();
-            })
-            .ConfigureLogging(logging =>
-            {
-                logging.ClearProviders();
-                logging.AddConsole();
-                logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Information);
-            })
-            .Build();
-
-        var log = host.Services.GetRequiredService<ILogger<Program>>();
-
-        log.LogInformation("Starting automated test sequence");
-        var browser = host.Services.GetRequiredService<BrowserService>();
+        var host = HostSetup.Build();
 
         try
         {
-            var custom = host.Services.GetRequiredService<CustomCommands>();
-            var js = host.Services.GetRequiredService<JsCommands>();
-            var actions = host.Services.GetRequiredService<TableActions>();
-            var driver = browser.Driver;
+            var factory = host.Services.GetRequiredService<CommandFactory>();
 
-            js.HideAds(driver);
+            var chromeOptions = new ChromeOptions();
+            chromeOptions.AddArgument("--start-maximized");
+            using var driver = new ChromeDriver(chromeOptions);
 
-            custom.TakeScreenshot(driver, "step_1_open_page");
-            driver.FindElement(By.Id("addNewRecordButton")).Click();
-            Thread.Sleep(300);
-            custom.TakeScreenshot(driver, "step_2_add_clicked");
+            var json = await File.ReadAllTextAsync("TestData/testScript.json");
+            var commands = JsonDocument.Parse(json).RootElement.EnumerateArray();
 
-            var json = await File.ReadAllTextAsync("TestData/userData.json");
-            var user = JsonSerializer.Deserialize<User>(json);
+            int step = 0;
+            foreach (var commandJson in commands)
+            {
+                var type = commandJson.GetProperty("type").GetString()!;
+                var parameters = commandJson.GetProperty("parameters")
+                    .EnumerateObject()
+                    .ToDictionary(p => p.Name, p => p.Value.GetString()!);
 
-            actions.FillUserForm(driver, user!);
-            custom.TakeScreenshot(driver, "step_3_fill_data");
-            driver.FindElement(By.Id("submit")).Click();
-            custom.TakeScreenshot(driver, "step_4_submit");
+                var command = factory.CreateCommand(type, host.Services);
+                await command.ExecuteAsync(driver, parameters);
 
-            custom.WaitForTableRowData(driver, user!);
-            custom.TakeScreenshot(driver, "step_5_row_verified");
-
-            int newSalary = new Random().Next(50_000, 150_000);
-            user!.Salary = newSalary.ToString();
-            actions.ClickEditButton(driver, user.Email);
-            actions.EditUserSalary(driver, newSalary);
-            custom.WaitForTableRowData(driver, user);
-            custom.TakeScreenshot(driver, "step_6_updated_salary");
-
-            actions.ClickDeleteButton(driver, user.Email);
-            custom.WaitForTableRowDeletion(driver, user.Email);
-            custom.TakeScreenshot(driver, "step_7_delete_user");
+                // Screenshot
+                Thread.Sleep(200);
+                Directory.CreateDirectory("Screenshots");
+                var screenshot = ((ITakesScreenshot)driver).GetScreenshot();
+                screenshot.SaveAsFile($"Screenshots/step_{++step}_{type}.png");
+            }
         }
         catch (Exception ex)
         {
-            log.LogError(ex.Message);
+            Console.WriteLine("Exception was thrown: " + ex.Message);
         }
         finally
         {
-            log.LogInformation("Closing application");
-            browser.Dispose();
+            host.Dispose();
         }
     }
 }
