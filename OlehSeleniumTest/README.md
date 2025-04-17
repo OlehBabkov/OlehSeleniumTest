@@ -19,9 +19,9 @@ Below is a breakdown of the commands implemented and their purpose:
 1. **openUrl**
 - Description: This command opens a given URL in the browser.
 - Usage:
-    openUrl: Opens the URL specified in the testScript.json file.
+    -openUrl: Opens the URL specified in the testScript.json file.
 - Parameters:
-    url: The URL to open (e.g., https://demoqa.com/webtables).
+    - url: The URL to open (e.g., https://demoqa.com/webtables).
 
 ```json
 {
@@ -35,7 +35,7 @@ Below is a breakdown of the commands implemented and their purpose:
 2. **removeAds**
 - Description: This command removes ads (if any) from the page to ensure that the test area remains uncluttered.
 - Usage:
-    removeAds: Trigger the hiding of ads on the page.
+    - removeAds: Trigger the hiding of ads on the page.
 - Parameters: None.
 
 ```json
@@ -48,7 +48,7 @@ Below is a breakdown of the commands implemented and their purpose:
 3. **clickAddNewRecordButton**
 - Description: This command clicks the "Add New Record" button to open the form for creating a new user.
 - Usage:
-    clickAddNewRecordButton: Clicks the button to open the form.
+    - clickAddNewRecordButton: Clicks the button to open the form.
 - Parameters: None.
 
 ```json
@@ -61,7 +61,7 @@ Below is a breakdown of the commands implemented and their purpose:
 4. **fillUserForm**
 - Description: This command fills in the user details in the form.
 - Usage:
-    fillUserForm: Populates the form with the user data from userData.json (such as First Name, Last Name, Email, etc.).
+    - fillUserForm: Populates the form with the user data from userData.json (such as First Name, Last Name, Email, etc.).
 - Parameters:
     - FirstName: First name of the user.
     - LastName: Last name of the user.
@@ -80,7 +80,7 @@ Below is a breakdown of the commands implemented and their purpose:
 5. **submitForm**
 - Description: This command submits the form with the filled user data.
 - Usage:
-    submitForm: Submits the filled form.
+    - submitForm: Submits the filled form.
 - Parameters: None.
 
 ```json
@@ -93,7 +93,7 @@ Below is a breakdown of the commands implemented and their purpose:
 6. **waitForTableRowData**
 - Description: This command waits for a newly added user record to appear in the table.
 - Usage:
-    waitForTableRowData: Waits for the table to refresh with the new user data.
+    - waitForTableRowData: Waits for the table to refresh with the new user data.
 - Parameters: None.
 
 ```json
@@ -106,9 +106,9 @@ Below is a breakdown of the commands implemented and their purpose:
 7. **clickEdit**
 - Description: This command clicks the "Edit" button for an existing user record.
 - Usage:
-    clickEdit: Clicks the "Edit" button for the specified user.
+    - clickEdit: Clicks the "Edit" button for the specified user.
 - Parameters:
-    email: The email of the user to be edited.
+    - email: The email of the user to be edited.
 
 ```json
 {
@@ -122,9 +122,9 @@ Below is a breakdown of the commands implemented and their purpose:
 8. **editUserSalary**
 - Description: This command edits the salary for an existing user.
 - Usage:
-    editUserSalary: Updates the salary of the selected user.
+    - editUserSalary: Updates the salary of the selected user.
 - Parameters:
-    newSalary: The new salary value to update.
+    - newSalary: The new salary value to update.
 
 ```json
 {
@@ -138,9 +138,9 @@ Below is a breakdown of the commands implemented and their purpose:
 9. **clickDelete**
 - Description: This command clicks the "Delete" button to remove an existing user.
 - Usage:
-    clickDelete: Deletes the user specified by the email address.
+    - clickDelete: Deletes the user specified by the email address.
 - Parameters:
-    email: The email of the user to be deleted.
+    - email: The email of the user to be deleted.
 
 ```json
 {
@@ -154,9 +154,9 @@ Below is a breakdown of the commands implemented and their purpose:
 10. **waitForTableRowDeletion**
 - Description: This command waits for a user to be removed from the table after clicking the delete button.
 - Usage:
-    waitForTableRowDeletion: Waits for the table to update after a user is deleted.
+    - waitForTableRowDeletion: Waits for the table to update after a user is deleted.
 - Parameters:
-    email: The email of the user to be deleted.
+    - email: The email of the user to be deleted.
 
 ```json
 {
