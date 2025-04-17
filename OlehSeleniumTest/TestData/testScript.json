@@ -1,0 +1,61 @@
+[
+  {
+    "type": "openUrl",
+    "parameters": {
+      "url": "https://demoqa.com/webtables"
+    }
+  },
+  {
+    "type": "removeAds",
+    "parameters": {}
+  },
+  {
+    "type": "clickAddNewRecordButton",
+    "parameters": {}
+  },
+  {
+    "type": "fillUserForm",
+    "parameters": {
+      "FirstName": "Oleh",
+      "LastName": "Tester",
+      "Email": "test@oleh.com",
+      "Age": "35",
+      "Salary": "70000",
+      "Department": "Software"
+    }
+  },
+  {
+    "type": "submitForm",
+    "parameters": {}
+  },
+  {
+    "type": "waitForTableRowData",
+    "parameters": {
+      "Email": "test@oleh.com"
+    }
+  },
+  {
+    "type": "clickEdit",
+    "parameters": {
+      "Email": "test@oleh.com"
+    }
+  },
+  {
+      "type": "editUserSalary",
+      "parameters": {
+          "Salary": "100000"
+      }
+  },
+  {
+    "type": "clickDelete",
+    "parameters": {
+      "Email": "test@oleh.com"
+    }
+  },
+  {
+    "type": "waitForTableRowDeletion",
+    "parameters": {
+      "Email": "test@oleh.com"
+    }
+  }
+]
