@@ -35,41 +35,55 @@ public class Program
             })
             .Build();
 
+        var log = host.Services.GetRequiredService<ILogger<Program>>();
+
+        log.LogInformation("Starting automated test sequence");
         var browser = host.Services.GetRequiredService<BrowserService>();
-        var custom = host.Services.GetRequiredService<CustomCommands>();
-        var js = host.Services.GetRequiredService<JsCommands>();
-        var actions = host.Services.GetRequiredService<TableActions>();
-        var driver = browser.Driver;
 
-        js.HideAds(driver);
+        try
+        {
+            var custom = host.Services.GetRequiredService<CustomCommands>();
+            var js = host.Services.GetRequiredService<JsCommands>();
+            var actions = host.Services.GetRequiredService<TableActions>();
+            var driver = browser.Driver;
 
-        custom.TakeScreenshot(driver, "step_1_open_page");
-        driver.FindElement(By.Id("addNewRecordButton")).Click();
-        Thread.Sleep(300);
-        custom.TakeScreenshot(driver, "step_2_add_clicked");
+            js.HideAds(driver);
 
-        var json = await File.ReadAllTextAsync("TestData/userData.json");
-        var user = JsonSerializer.Deserialize<User>(json);
+            custom.TakeScreenshot(driver, "step_1_open_page");
+            driver.FindElement(By.Id("addNewRecordButton")).Click();
+            Thread.Sleep(300);
+            custom.TakeScreenshot(driver, "step_2_add_clicked");
 
-        actions.FillUserForm(driver, user!);
-        custom.TakeScreenshot(driver, "step_3_fill_data");
-        driver.FindElement(By.Id("submit")).Click();
-        custom.TakeScreenshot(driver, "step_4_submit");
+            var json = await File.ReadAllTextAsync("TestData/userData.json");
+            var user = JsonSerializer.Deserialize<User>(json);
 
-        custom.WaitForTableRowData(driver, user!);
-        custom.TakeScreenshot(driver, "step_5_row_verified");
+            actions.FillUserForm(driver, user!);
+            custom.TakeScreenshot(driver, "step_3_fill_data");
+            driver.FindElement(By.Id("submit")).Click();
+            custom.TakeScreenshot(driver, "step_4_submit");
 
-        int newSalary = new Random().Next(50_000, 150_000);
-        user!.Salary = newSalary.ToString();
-        actions.ClickEditButton(driver, user.Email);
-        actions.EditUserSalary(driver, newSalary);
-        custom.WaitForTableRowData(driver, user);
-        custom.TakeScreenshot(driver, "step_6_updated_salary");
+            custom.WaitForTableRowData(driver, user!);
+            custom.TakeScreenshot(driver, "step_5_row_verified");
 
-        actions.ClickDeleteButton(driver, user.Email);
-        custom.WaitForTableRowDeletion(driver, user.Email);
-        custom.TakeScreenshot(driver, "step_7_delete_user");
+            int newSalary = new Random().Next(50_000, 150_000);
+            user!.Salary = newSalary.ToString();
+            actions.ClickEditButton(driver, user.Email);
+            actions.EditUserSalary(driver, newSalary);
+            custom.WaitForTableRowData(driver, user);
+            custom.TakeScreenshot(driver, "step_6_updated_salary");
 
-        browser.Dispose();
+            actions.ClickDeleteButton(driver, user.Email);
+            custom.WaitForTableRowDeletion(driver, user.Email);
+            custom.TakeScreenshot(driver, "step_7_delete_user");
+        }
+        catch (Exception ex)
+        {
+            log.LogError(ex.Message);
+        }
+        finally
+        {
+            log.LogInformation("Closing application");
+            browser.Dispose();
+        }
     }
 }
