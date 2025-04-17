@@ -1,22 +1,18 @@
-using Microsoft.Extensions.Options;
-using OlehSeleniumTest.Configuration;
+using Microsoft.Extensions.Logging;
 using OlehSeleniumTest.Models;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 
 namespace OlehSeleniumTest.Commands
 {
-    public class CustomCommands
+    public class CustomCommands(ILogger<CustomCommands> logger)
     {
-        private readonly CustomSettings _customSettings;
-
-        public CustomCommands(IOptions<CustomSettings> options)
-        {
-            _customSettings = options.Value;
-        }
+        private readonly ILogger<CustomCommands> _logger = logger;
 
         public void TakeScreenshot(IWebDriver driver, string stepName)
         {
+            _logger.LogInformation($"Taking screensot for {stepName}");
+
             string screenshotsDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Screenshots");
             Directory.CreateDirectory(screenshotsDir);
 
@@ -27,6 +23,8 @@ namespace OlehSeleniumTest.Commands
         public void WaitForTableRowData(
             IWebDriver driver, User expectedUser, int timeoutInSeconds = 5)
         {
+            _logger.LogInformation("Waiting for a new row appeared in a table");
+
             var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(timeoutInSeconds));
 
             wait.Until(d =>
@@ -45,15 +43,11 @@ namespace OlehSeleniumTest.Commands
                                     rowText.Contains(expectedUser.Department, StringComparison.OrdinalIgnoreCase);
 
                     if (allMatch)
-                    {
-                        Console.WriteLine("User was found!");
-                        Console.WriteLine(rowText);
-
                         return true;
-                    }
                 }
 
-                System.Console.WriteLine("User wasn't found!");
+                _logger.LogWarning("User wasn't found!");
+
                 return false;
             });
         }
@@ -61,6 +55,8 @@ namespace OlehSeleniumTest.Commands
         public void WaitForTableRowDeletion(
             IWebDriver driver, string email, int timeoutInSeconds = 10)
         {
+            _logger.LogInformation("Waiting for a deletion");
+
             var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(timeoutInSeconds));
 
             wait.Until(d =>

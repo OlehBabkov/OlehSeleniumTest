@@ -1,11 +1,16 @@
+using Microsoft.Extensions.Logging;
 using OpenQA.Selenium;
 
 namespace OlehSeleniumTest.Commands
 {
-    public class JsCommands
+    public class JsCommands(ILogger<JsCommands> logger)
     {
+        private readonly ILogger<JsCommands> _logger = logger;
+
         public void HideAds(IWebDriver driver)
         {
+            _logger.LogInformation("Removing advertisments");
+            
             IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
 
             js.ExecuteScript(@"
