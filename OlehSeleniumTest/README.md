@@ -188,6 +188,7 @@ Here’s a brief summary of how services are configured:
 
 ## Running the Project
 Clone the repository to your local machine.
+In a Command line type ```cmd cd .\OlehSeleniumTest\```
 Run ```cmd dotnet restore``` to restore the NuGet packages.
 Run ```cmd dotnet build``` to build the project.
 Execute the project using ```cmd dotnet run``` to run the automation script.
