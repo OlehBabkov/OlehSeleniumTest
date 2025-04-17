@@ -21,7 +21,7 @@ Below is a breakdown of the commands implemented and their purpose:
 - Usage:
     openUrl: Opens the URL specified in the testScript.json file.
 - Parameters:
-    url: The URL to open (e.g., http://example.com).
+    url: The URL to open (e.g., https://demoqa.com/webtables).
 
 ```json
 {
@@ -63,12 +63,12 @@ Below is a breakdown of the commands implemented and their purpose:
 - Usage:
     fillUserForm: Populates the form with the user data from userData.json (such as First Name, Last Name, Email, etc.).
 - Parameters:
-    FirstName: First name of the user.
-    LastName: Last name of the user.
-    Email: User email.
-    Age: User age.
-    Salary: User salary.
-    Department: Department of the user.
+    - FirstName: First name of the user.
+    - LastName: Last name of the user.
+    - Email: User email.
+    - Age: User age.
+    - Salary: User salary.
+    - Department: Department of the user.
 
 ```json
 {
@@ -188,6 +188,6 @@ Here’s a brief summary of how services are configured:
 
 ## Running the Project
 Clone the repository to your local machine.
-Run ```bash dotnet restore``` to restore the NuGet packages.
-Run ```bashdotnet build``` to build the project.
-Execute the project using ```bash dotnet run``` to run the automation script.
+Run ```cmd dotnet restore``` to restore the NuGet packages.
+Run ```cmd dotnet build``` to build the project.
+Execute the project using ```cmd dotnet run``` to run the automation script.
